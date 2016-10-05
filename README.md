@@ -1,14 +1,10 @@
-# Welcome to ASP.NET 5
+# hs-aspnetcore-react-starter
 
-We've made some big updates in this release, so it’s **important** that you spend a few minutes to learn what’s new.
+This starter app is made using ASP.NET Core, with a basic web API and React/Redux front end living in the same project. This app can be deployed and run using Visual Studio Team Services, or directly via command line.
 
-You've created a new ASP.NET 5 project. [Learn what's new](http://go.microsoft.com/fwlink/?LinkId=518016)
+## Environment Setup
 
-## This application consists of:
-
-*   Sample pages using ASP.NET MVC 6
-*   [Gulp](http://go.microsoft.com/fwlink/?LinkId=518007) and [Bower](http://go.microsoft.com/fwlink/?LinkId=518004) for managing client-side libraries
-*   Theming using [Bootstrap](http://go.microsoft.com/fwlink/?LinkID=398939)
+*   To configure your Visual Studio environment to handle ASP.NET Core projects, [install the .NET Core SDK](https://www.microsoft.com/net/core#windows)
 
 ## How to
 
@@ -36,5 +32,3 @@ You've created a new ASP.NET 5 project. [Learn what's new](http://go.microsoft.c
 *   [Run your app on .NET Core](http://go.microsoft.com/fwlink/?LinkID=517852)
 *   [Run commands in your project.json](http://go.microsoft.com/fwlink/?LinkID=517853)
 *   [Publish to Microsoft Azure Web Apps](http://go.microsoft.com/fwlink/?LinkID=398609)
-
-We would love to hear your [feedback](http://go.microsoft.com/fwlink/?LinkId=518015)

@@ -15,15 +15,15 @@ var sharedConfig = () => ({
     },
     module: {
         loaders: [
-            { test: /\.tsx?$/, include: /ClientApp/, loader: 'babel-loader' },
-            { test: /\.tsx?$/, include: /ClientApp/, loader: 'ts', query: { silent: true } }
+            { test: /\.tsx?$/, include: /src/, loader: 'babel-loader' },
+            { test: /\.tsx?$/, include: /src/, loader: 'ts', query: { silent: true } }
         ]
     }
 });
 
 // Configuration for client-side bundle suitable for running in browsers
 var clientBundleConfig = merge(sharedConfig(), {
-    entry: { 'main-client': './ClientApp/boot-client.tsx' },
+    entry: { 'main-client': './src/boot-client.tsx' },
     module: {
         loaders: [
             { test: /\.css$/, loader: ExtractTextPlugin.extract(['css']) },
@@ -47,10 +47,10 @@ var clientBundleConfig = merge(sharedConfig(), {
 
 // Configuration for server-side (prerendering) bundle suitable for running in Node
 var serverBundleConfig = merge(sharedConfig(), {
-    entry: { 'main-server': './ClientApp/boot-server.tsx' },
+    entry: { 'main-server': './src/boot-server.tsx' },
     output: {
         libraryTarget: 'commonjs',
-        path: path.join(__dirname, './ClientApp/dist')
+        path: path.join(__dirname, './src/dist')
     },
     target: 'node',
     devtool: 'inline-source-map',

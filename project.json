@@ -52,7 +52,7 @@
   "publishOptions": {
     "include": [
       "appsettings.json",
-      "ClientApp/dist",
+      "src/dist",
       "node_modules",
       "Views",
       "web.config",
