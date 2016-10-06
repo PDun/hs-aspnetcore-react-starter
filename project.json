@@ -52,7 +52,6 @@
   "publishOptions": {
     "include": [
       "appsettings.json",
-      "src/dist",
       "node_modules",
       "Views",
       "web.config",
@@ -61,8 +60,12 @@
   },
 
   "scripts": {
+    "prebuild": [
+      "npm run build"
+    ],
     "prepublish": [
       "npm install",
+      "npm run build",
       "node node_modules/webpack/bin/webpack.js --config webpack.config.prod.js --env.prod",
       "node node_modules/webpack/bin/webpack.js --env.prod"
     ],

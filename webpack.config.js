@@ -1,60 +1,45 @@
-var isDevBuild = process.argv.indexOf('--env.prod') < 0;
-var path = require('path');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var nodeExternals = require('webpack-node-externals');
-var merge = require('webpack-merge');
-var allFilenamesExceptJavaScript = /\.(?!js(\?|$))([^.]+(\?|$))/;
+let webpack = require('webpack');
+let path = require('path');
+let pkg = require('./package.json'); // eslint-disable-line
 
-// Configuration in common to both client-side and server-side bundles
-var sharedConfig = () => ({
-    resolve: { extensions: [ '', '.js', '.jsx', '.ts', '.tsx' ] },
-    output: {
-        filename: '[name].js',
-        publicPath: '/dist/' // Webpack dev middleware, if enabled, handles requests for this URL prefix
-    },
-    module: {
-        loaders: [
-            { test: /\.tsx?$/, include: /src/, loader: 'babel-loader' },
-            { test: /\.tsx?$/, include: /src/, loader: 'ts', query: { silent: true } }
-        ]
-    }
-});
+const GLOBALS = {
+  'process.env.NODE_ENV': JSON.stringify('development'),
+  __DEV__: true
+};
 
-// Configuration for client-side bundle suitable for running in browsers
-var clientBundleConfig = merge(sharedConfig(), {
-    entry: { 'main-client': './src/boot-client.tsx' },
-    module: {
-        loaders: [
-            { test: /\.css$/, loader: ExtractTextPlugin.extract(['css']) },
-            { test: /\.(png|jpg|jpeg|gif|svg)$/, loader: 'url', query: { limit: 25000 } }
-        ]
-    },
-    output: { path: path.join(__dirname, './wwwroot/dist') },
-    devtool: isDevBuild ? 'inline-source-map' : null,
-    plugins: [
-        new ExtractTextPlugin('site.css'),
-        new webpack.DllReferencePlugin({
-            context: __dirname,
-            manifest: require('./wwwroot/dist/vendor-manifest.json')
-        })
-    ].concat(isDevBuild ? [] : [
-        // Plugins that apply in production builds only
-        new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
-    ])
-});
-
-// Configuration for server-side (prerendering) bundle suitable for running in Node
-var serverBundleConfig = merge(sharedConfig(), {
-    entry: { 'main-server': './src/boot-server.tsx' },
-    output: {
-        libraryTarget: 'commonjs',
-        path: path.join(__dirname, './src/dist')
-    },
-    target: 'node',
-    devtool: 'inline-source-map',
-    externals: [nodeExternals({ whitelist: [allFilenamesExceptJavaScript] })] // Don't bundle .js files from node_modules
-});
-
-module.exports = [clientBundleConfig, serverBundleConfig];
+module.exports = {
+  debug: true,
+  devtool: 'inline-source-map', // more info:https://webpack.github.io/docs/build-performance.html#sourcemaps and https://webpack.github.io/docs/configuration.html#devtool
+  noInfo: true, // set to false to see a list of every file being bundled.
+  entry: {
+    app: [
+      'webpack-hot-middleware/client?reload=true',
+      './src/index'
+    ],
+    vendor: Object.keys(pkg.dependencies)
+  },
+  target: 'web', // necessary per https://webpack.github.io/docs/testing.html#compile-and-test
+  output: {
+    path: `${__dirname}/wwwroot/dist`, // Note: Physical files are only output by the production build task `npm run build`.
+    publicPath: '/dist/', // Use absolute paths to avoid the way that URLs are resolved by Chrome when they're parsed from a dynamically loaded CSS blob. Note: Only necessary in Dev.
+    filename: '[name].bundle.js'
+  },
+  plugins: [
+    new webpack.DefinePlugin(GLOBALS), // Tells React to build in prod mode. https://facebook.github.io/react/downloads.htmlnew webpack.HotModuleReplacementPlugin());
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoErrorsPlugin(),
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')
+  ],
+  module: {
+    loaders: [
+      {test: /(\.js|\.jsx)$/, include: path.join(__dirname, 'src'), loaders: ['babel']},
+      {test: /\.eot(\?v=\d+.\d+.\d+)?$/, loader: 'file'},
+      {test: /\.(woff|woff2)$/, loader: 'file-loader?prefix=font/&limit=5000'},
+      {test: /\.ttf(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader?limit=10000&mimetype=application/octet-stream'},
+      {test: /\.svg(\?v=\d+.\d+.\d+)?$/, loader: 'file-loader?limit=10000&mimetype=image/svg+xml'},
+      {test: /\.(jpe?g|png|gif)$/i, loaders: ['file']},
+      {test: /\.ico$/, loader: 'file-loader?name=[name].[ext]'},
+      {test: /(\.css|\.scss)$/, loaders: ['style!css', 'css?sourceMap', 'sass?sourceMap']}
+    ]
+  }
+};
