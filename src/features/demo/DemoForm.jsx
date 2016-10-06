@@ -2,6 +2,7 @@ import React, {PropTypes} from 'react';
 import classNames from 'classnames';
 import Submitting from '../shared/Submitting.jsx';
 import FieldValidationError from '../shared/FieldValidationError.jsx';
+import {ApiDemo} from './ApiDemo.jsx';
 
 const DemoForm = ({
   fields: {
@@ -57,6 +58,13 @@ const DemoForm = ({
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div className="panel panel-default">
+        <div className="panel-body">
+          <h4>API Demo: Weather Forecast</h4>
+          <ApiDemo/>
         </div>
       </div>
 
