@@ -40,6 +40,8 @@
     "redux-thunk": "^2.1.0"
   },
   "devDependencies": {
+    "aspnet-webpack": "^1.0.6",
+    "aspnet-webpack-react": "^1.0.2",
     "babel-cli": "6.10.1",
     "babel-core": "6.10.4",
     "babel-loader": "6.2.4",
